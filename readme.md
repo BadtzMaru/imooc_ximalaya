@@ -13,3 +13,7 @@
      进入到文件目录
      `node vendors/server/app.js`
      默认密码 `ymfe.org`
+4. 导航器 React Navigation 5.X
+   `yarn add @react-navigation/native`
+   `yarn add react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view`
+   `npx pod-install ios`
