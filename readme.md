@@ -24,3 +24,6 @@
 
 5. 堆栈导航器
    `yarn add @react-navigation/stack`
+
+6. 底部标签导航器
+   `yarn add @react-navigation/bottom-tabs`

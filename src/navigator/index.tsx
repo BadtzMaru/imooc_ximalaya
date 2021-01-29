@@ -1,30 +1,54 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import Home from '@/pages/Home';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+  HeaderStyleInterpolators,
+  StackNavigationProp,
+} from '@react-navigation/stack';
+import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
+import {Platform, StyleSheet} from 'react-native';
 
-type RoootStackParamList = {
-  Home: undefined;
-  Detail: undefined;
+export type RootStackParamList = {
+  BottomTabs: {
+    screen?: string;
+  };
+  Detail: {
+    id: number;
+  };
 };
 
-let Stack = createStackNavigator<RoootStackParamList>();
+export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
+
+let Stack = createStackNavigator<RootStackParamList>();
 
 class Navigator extends React.Component {
   render() {
     return (
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
+        <Stack.Navigator
+          screenOptions={{
+            headerTitleAlign: 'center',
+            headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            gestureEnabled: true,
+            gestureDirection: 'horizontal',
+            headerStyle: {
+              ...Platform.select({
+                android: {
+                  elevation: 0,
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                },
+              }),
+            },
+          }}
+          headerMode="float">
+          <Stack.Screen name="BottomTabs" component={BottomTabs} />
           <Stack.Screen
-            options={{headerTitle: '首页'}}
-            name="Home"
-            component={Home}
-          />
-          <Stack.Screen
-            options={{headerTitle: '详情页'}}
             name="Detail"
             component={Detail}
+            options={{headerTitle: '详情页'}}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -6,7 +6,7 @@ interface IProps {
   navigation: RootStackNavigation;
 }
 
-class Home extends React.Component<IProps> {
+class Found extends React.Component<IProps> {
   onPress = () => {
     const {navigation} = this.props;
     navigation.navigate('Detail', {id: 100});
@@ -14,11 +14,11 @@ class Home extends React.Component<IProps> {
   render() {
     return (
       <View>
-        <Text>Home</Text>
+        <Text>Found</Text>
         <Button title="跳转到详情页" onPress={this.onPress} />
       </View>
     );
   }
 }
 
-export default Home;
+export default Found;
