@@ -34,6 +34,7 @@ class Navigator extends React.Component {
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
             gestureEnabled: true,
             gestureDirection: 'horizontal',
+            // headerStatusBarHeight: StatusBar.currentHeight,
             headerStyle: {
               ...Platform.select({
                 android: {
@@ -44,7 +45,11 @@ class Navigator extends React.Component {
             },
           }}
           headerMode="float">
-          <Stack.Screen name="BottomTabs" component={BottomTabs} />
+          <Stack.Screen
+            name="BottomTabs"
+            component={BottomTabs}
+            options={{headerTitle: '首页'}}
+          />
           <Stack.Screen
             name="Detail"
             component={Detail}
