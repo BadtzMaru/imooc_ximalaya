@@ -6,19 +6,18 @@ import SnapCarousel, {
   Pagination,
 } from 'react-native-snap-carousel';
 import {StyleSheet, View} from 'react-native';
-
-const data = [
-  'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=152637735,3689600067&fm=26&gp=0.jpg',
-  'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2057369888,2798805568&fm=26&gp=0.jpg',
-  'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1675818983,567644413&fm=26&gp=0.jpg',
-];
+import {ICarousel} from '@/models/home';
 
 const sliderWidth = viewportWidth;
 const sidewidth = wp(90);
 const sideHeight = hp(26);
-const itemWidth = wp(90) + wp(2) * 2;
+const itemWidth = sidewidth + wp(2) * 2;
 
-class Carousel extends React.Component {
+interface IProps {
+  data: ICarousel[];
+}
+
+class Carousel extends React.Component<IProps> {
   state = {
     activeSlide: 0,
   };
@@ -28,11 +27,11 @@ class Carousel extends React.Component {
     });
   };
   renderItem = (
-    {item}: {item: string},
+    {item}: {item: ICarousel},
     parallaxProps?: AdditionalParallaxProps,
   ) => (
     <ParallaxImage
-      source={{uri: item}}
+      source={{uri: item.image}}
       style={styles.image}
       containerStyle={styles.imageContainer}
       {...parallaxProps}
@@ -42,6 +41,7 @@ class Carousel extends React.Component {
   );
 
   get pagination() {
+    const {data} = this.props;
     const {activeSlide} = this.state;
     return (
       <View style={styles.paginationWrapper}>
@@ -59,6 +59,7 @@ class Carousel extends React.Component {
   }
 
   render() {
+    const {data} = this.props;
     return (
       <View>
         <SnapCarousel
@@ -79,7 +80,7 @@ class Carousel extends React.Component {
 
 const styles = StyleSheet.create({
   imageContainer: {
-    width: sidewidth,
+    width: itemWidth,
     height: sideHeight,
     borderRadius: 8,
   },
