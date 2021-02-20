@@ -27,8 +27,7 @@ interface IProps {
   route: Route;
 }
 
-function getHeaderTitle(route: Route) {
-  const routeName = getFocusedRouteNameFromRoute(route) ?? 'HomeTabs';
+function getHeaderTitle(routeName: string) {
   switch (routeName) {
     case 'Home':
       return '首页';
@@ -44,12 +43,27 @@ function getHeaderTitle(route: Route) {
 }
 
 class BottomTabs extends React.Component<IProps> {
-  componentDidUpdate() {
-    const {navigation, route} = this.props;
-    navigation.setOptions({
-      headerTitle: getHeaderTitle(route),
-    });
+  componentDidMount() {
+    this.setOptions();
   }
+  componentDidUpdate() {
+    this.setOptions();
+  }
+  setOptions = () => {
+    const {navigation, route} = this.props;
+    const routeName = getFocusedRouteNameFromRoute(route) ?? 'HomeTabs';
+    if (routeName === 'HomeTabs') {
+      navigation.setOptions({
+        headerTransparent: true,
+        headerTitle: '',
+      });
+    } else {
+      navigation.setOptions({
+        headerTransparent: false,
+        headerTitle: getHeaderTitle(routeName),
+      });
+    }
+  };
   render() {
     return (
       <Tab.Navigator

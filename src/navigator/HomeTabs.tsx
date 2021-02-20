@@ -1,14 +1,22 @@
 import React from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {
+  createMaterialTopTabNavigator,
+  MaterialTopTabBarProps,
+} from '@react-navigation/material-top-tabs';
 import Home from '@/pages/Home/index';
+import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper';
 
 const Tab = createMaterialTopTabNavigator();
 
 class HomeTabs extends React.Component {
+  renderTabBar = (props: MaterialTopTabBarProps) => {
+    return <TopTabBarWrapper {...props} />;
+  };
   render() {
     return (
       <Tab.Navigator
         lazy
+        tabBar={this.renderTabBar}
         tabBarOptions={{
           scrollEnabled: true,
           tabStyle: {
