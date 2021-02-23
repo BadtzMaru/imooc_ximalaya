@@ -10,7 +10,7 @@ const CHANNEL_URL = '/mock/11/bear/channel'; // 首页列表
 export interface ICarousel {
   id: string;
   image: string;
-  color: [string, string];
+  colors: [string, string];
 }
 
 export interface IGuess {
@@ -21,6 +21,8 @@ export interface IGuess {
 
 export interface HomeState {
   carousels: ICarousel[];
+  activeCarouselIndex: number; // 当前轮播图的下标
+  gradientVisible: boolean; // 渐变色组件是否显示状态
   guess: IGuess[];
   channels: IChannel[];
   pagination: IPagination;
@@ -56,6 +58,8 @@ interface HomeModel extends Model {
 
 const initialState: HomeState = {
   carousels: [],
+  activeCarouselIndex: 0,
+  gradientVisible: true,
   guess: [],
   channels: [],
   pagination: {

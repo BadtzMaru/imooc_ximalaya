@@ -5,11 +5,13 @@ import {
   View,
   Text,
   StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import {RootStackNavigation} from '@/navigator/index';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '@/models/index';
-import Carousel from './Carousel';
+import Carousel, {sideHeight} from './Carousel';
 import Guess from './Guess';
 import ChannelItem from './ChannelItem';
 import {IChannel} from '@/models/home';
@@ -19,6 +21,7 @@ const mapStateToProps = ({home, loading}: RootState) => ({
   channels: home.channels,
   hasMore: home.pagination.hasMore,
   loading: loading.effects['home/fetchChannels'],
+  gradientVisible: home.gradientVisible,
 });
 
 const connector = connect(mapStateToProps);
@@ -53,11 +56,12 @@ class Home extends React.Component<IProps, IState> {
     return <ChannelItem data={item} onPress={this.onPress} />;
   };
   get header() {
-    const {carousels} = this.props;
     return (
       <View>
-        <Carousel data={carousels} />
-        <Guess />
+        <Carousel />
+        <View style={styles.background}>
+          <Guess />
+        </View>
       </View>
     );
   }
@@ -120,6 +124,19 @@ class Home extends React.Component<IProps, IState> {
       </View>
     );
   }
+  onScroll = ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetY = nativeEvent.contentOffset.y;
+    let newGradientVisible = offsetY < sideHeight;
+    const {dispatch, gradientVisible} = this.props;
+    if (gradientVisible !== newGradientVisible) {
+      dispatch({
+        type: 'home/setState',
+        payload: {
+          gradientVisible: newGradientVisible,
+        },
+      });
+    }
+  };
   render() {
     const {refreshing} = this.state;
     const {channels} = this.props;
@@ -135,6 +152,7 @@ class Home extends React.Component<IProps, IState> {
         refreshing={refreshing}
         onEndReached={this.onEndReached}
         onEndReachedThreshold={0.2}
+        onScroll={this.onScroll}
       />
     );
   }
@@ -152,6 +170,9 @@ const styles = StyleSheet.create({
   empty: {
     alignItems: 'center',
     paddingVertical: 100,
+  },
+  background: {
+    backgroundColor: '#fff',
   },
 });
 
