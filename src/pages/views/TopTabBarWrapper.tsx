@@ -1,5 +1,6 @@
 import Touchable from '@/components/Touchable';
 import {RootState} from '@/models/index';
+import {getActiveRouteName} from '@/utils/index';
 import {
   MaterialTopTabBarProps,
   MaterialTopTabBar,
@@ -10,15 +11,17 @@ import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import LinearAnimatedGradientTransition from 'react-native-linear-animated-gradient-transition';
 import {connect, ConnectedProps} from 'react-redux';
 
-const mapStateToProps = ({home}: RootState) => {
+const mapStateToProps = (state: RootState, props: MaterialTopTabBarProps) => {
+  const routeName = getActiveRouteName(props.state);
+  const modelState = state[routeName];
   return {
     linearColors:
-      home.carousels && home.carousels.length > 0
-        ? home.carousels[home.activeCarouselIndex]
-          ? home.carousels[home.activeCarouselIndex].colors
+      modelState.carousels && modelState.carousels.length > 0
+        ? modelState.carousels[modelState.activeCarouselIndex]
+          ? modelState.carousels[modelState.activeCarouselIndex].colors
           : undefined
         : undefined,
-    gradientVisible: home.gradientVisible,
+    gradientVisible: modelState.gradientVisible,
   };
 };
 
@@ -41,6 +44,10 @@ class TopTabBarWrapper extends React.Component<IProps> {
     }
     return null;
   }
+  goCategory = () => {
+    const {navigation} = this.props;
+    navigation.navigate('Category');
+  };
   render() {
     let {gradientVisible, indicatorStyle, ...restProps} = this.props;
     let textStyle = styles.text;
@@ -65,7 +72,7 @@ class TopTabBarWrapper extends React.Component<IProps> {
             style={styles.tabbar}
             activeTintColor={activeTintColor}
           />
-          <Touchable style={styles.categoryBtn}>
+          <Touchable style={styles.categoryBtn} onPress={this.goCategory}>
             <Text style={textStyle}>分类</Text>
           </Touchable>
         </View>

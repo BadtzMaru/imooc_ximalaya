@@ -16,24 +16,30 @@ const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
 
-class Guess extends React.Component<ModelState> {
+interface IProps extends ModelState {
+  namespace: string;
+  goAlbum: (item: IGuess) => void;
+}
+
+class Guess extends React.Component<IProps> {
   componentDidMount() {
     this.fetch();
   }
 
   fetch = () => {
-    const {dispatch} = this.props;
+    const {dispatch, namespace} = this.props;
     dispatch({
-      type: 'home/fetchGuess',
+      type: namespace + '/fetchGuess',
     });
   };
 
   renderItem = ({item}: {item: IGuess}) => {
+    const {goAlbum} = this.props;
     return (
       <Touchable
         style={styles.item}
         onPress={() => {
-          Alert.alert('点击');
+          goAlbum(item);
         }}>
         <Image source={{uri: item.image}} style={styles.image} />
         <Text numberOfLines={2}>{item.title}</Text>

@@ -14,15 +14,25 @@ import {RootState} from '@/models/index';
 import Carousel, {sideHeight} from './Carousel';
 import Guess from './Guess';
 import ChannelItem from './ChannelItem';
-import {IChannel} from '@/models/home';
+import {IChannel, IGuess} from '@/models/home';
+import {RouteProp} from '@react-navigation/native';
+import {HomeParamList} from '@/navigator/HomeTabs';
 
-const mapStateToProps = ({home, loading}: RootState) => ({
-  carousels: home.carousels,
-  channels: home.channels,
-  hasMore: home.pagination.hasMore,
-  loading: loading.effects['home/fetchChannels'],
-  gradientVisible: home.gradientVisible,
-});
+const mapStateToProps = (
+  state: RootState,
+  {route}: {route: RouteProp<HomeParamList, string>},
+) => {
+  const {namespace} = route.params;
+  const modelState = state[namespace];
+  return {
+    namespace,
+    carousels: modelState.carousels,
+    channels: modelState.channels,
+    hasMore: modelState.pagination.hasMore,
+    loading: state.loading.effects[namespace + '/fetchChannels'],
+    gradientVisible: modelState.gradientVisible,
+  };
+};
 
 const connector = connect(mapStateToProps);
 
@@ -41,26 +51,29 @@ class Home extends React.Component<IProps, IState> {
     refreshing: false,
   };
   componentDidMount() {
-    const {dispatch} = this.props;
+    const {dispatch, namespace} = this.props;
     dispatch({
-      type: 'home/fetchCarousels',
+      type: namespace + '/fetchCarousels',
     });
     dispatch({
-      type: 'home/fetchChannels',
+      type: namespace + '/fetchChannels',
     });
   }
-  onPress = (data: IChannel) => {
+  goAlbum = (data: IChannel | IGuess) => {
     console.log(data);
+    const {navigation} = this.props;
+    navigation.navigate('Album', {item: data});
   };
   renderItem = ({item}: ListRenderItemInfo<IChannel>) => {
-    return <ChannelItem data={item} onPress={this.onPress} />;
+    return <ChannelItem data={item} onPress={this.goAlbum} />;
   };
   get header() {
+    const {namespace} = this.props;
     return (
       <View>
         <Carousel />
         <View style={styles.background}>
-          <Guess />
+          <Guess namespace={namespace} goAlbum={this.goAlbum} />
         </View>
       </View>
     );
@@ -70,12 +83,12 @@ class Home extends React.Component<IProps, IState> {
   };
   // 刷新
   onRefresh = () => {
-    const {dispatch} = this.props;
+    const {dispatch, namespace} = this.props;
     this.setState({
       refreshing: true,
     });
     dispatch({
-      type: 'home/fetchChannels',
+      type: namespace + '/fetchChannels',
       callback: () => {
         this.setState({
           refreshing: false,
@@ -85,12 +98,12 @@ class Home extends React.Component<IProps, IState> {
   };
   // 加载更多
   onEndReached = () => {
-    const {dispatch, loading, hasMore} = this.props;
+    const {dispatch, loading, hasMore, namespace} = this.props;
     if (loading || !hasMore) {
       return;
     }
     dispatch({
-      type: 'home/fetchChannels',
+      type: namespace + '/fetchChannels',
       payload: {
         loadMore: true,
       },
@@ -127,10 +140,10 @@ class Home extends React.Component<IProps, IState> {
   onScroll = ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = nativeEvent.contentOffset.y;
     let newGradientVisible = offsetY < sideHeight;
-    const {dispatch, gradientVisible} = this.props;
+    const {dispatch, gradientVisible, namespace} = this.props;
     if (gradientVisible !== newGradientVisible) {
       dispatch({
-        type: 'home/setState',
+        type: namespace + '/setState',
         payload: {
           gradientVisible: newGradientVisible,
         },
