@@ -35,6 +35,7 @@ const mapStateToProps = ({player}: RootState) => {
     previousId: player.previousId,
     nextId: player.nextId,
     thumbnailUrl: player.thumbnailUrl,
+    id: player.id,
   };
 };
 
@@ -64,13 +65,19 @@ class Detail extends React.Component<IProps, IState> {
   };
   anim = new Animated.Value(1);
   componentDidMount() {
-    const {dispatch, route, navigation, title} = this.props;
-    dispatch({
-      type: 'player/fetchShow',
-      payload: {
-        id: route.params.id,
-      },
-    });
+    const {dispatch, route, navigation, title, id} = this.props;
+    if (route.params && route.params.id !== id) {
+      dispatch({
+        type: 'player/fetchShow',
+        payload: {
+          id: route.params.id,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'player/play',
+      });
+    }
     navigation.setOptions({
       headerTitle: title,
     });

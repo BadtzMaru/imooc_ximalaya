@@ -18,7 +18,8 @@ import Category from '../pages/Category/index';
 import Album from '@/pages/Album';
 import Icon from '@/assets/iconfont/index';
 import PlayView from '@/pages/views/PlayView';
-import {getActiveRouteName} from '../utils';
+import {getActiveRouteName, navigationRef} from '../utils';
+import Login from '@/pages/Login';
 
 export type RootStackParamList = {
   BottomTabs: {
@@ -111,17 +112,13 @@ function RootStackScreen() {
         options={{headerTitle: '分类'}}
       />
       <Stack.Screen name="Album" component={Album} options={getAlbumOptions} />
-      <Stack.Screen
-        name="Detail"
-        component={Detail}
-        options={{headerTitle: '详情页'}}
-      />
     </Stack.Navigator>
   );
 }
 export type ModalStackParamList = {
   Root: undefined;
   Detail: {id: string};
+  Login: undefined;
 };
 
 const ModalStack = createStackNavigator<ModalStackParamList>();
@@ -138,11 +135,19 @@ function ModalStackScreen() {
         gestureEnabled: true,
         ...TransitionPresets.ModalSlideFromBottomIOS,
         headerBackTitleVisible: false,
+        headerTintColor: '#333',
       }}>
       <ModalStack.Screen
         name="Root"
         component={RootStackScreen}
         options={{headerShown: false}}
+      />
+      <ModalStack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerTitle: '登录',
+        }}
       />
       <ModalStack.Screen
         name="Detail"
@@ -181,7 +186,9 @@ class Navigator extends React.Component {
   render() {
     const {routeName} = this.state;
     return (
-      <NavigationContainer onStateChange={this.onStateChange}>
+      <NavigationContainer
+        ref={navigationRef}
+        onStateChange={this.onStateChange}>
         <ModalStackScreen />
         <PlayView routeName={routeName} />
       </NavigationContainer>

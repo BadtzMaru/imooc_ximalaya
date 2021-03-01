@@ -1,4 +1,8 @@
-import {NavigationState} from '@react-navigation/native';
+import {
+  NavigationContainerRef,
+  NavigationState,
+} from '@react-navigation/native';
+import React from 'react';
 import {Dimensions} from 'react-native';
 
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
@@ -30,4 +34,24 @@ function formatTime(seconds: number) {
   return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
 }
 
-export {viewportWidth, viewportHeight, wp, hp, getActiveRouteName, formatTime};
+const navigationRef = React.createRef<NavigationContainerRef>();
+
+function navigate(name: string, params?: any) {
+  navigationRef.current?.navigate(name, params);
+}
+
+function goBack() {
+  navigationRef.current?.goBack();
+}
+
+export {
+  viewportWidth,
+  viewportHeight,
+  wp,
+  hp,
+  getActiveRouteName,
+  formatTime,
+  navigationRef,
+  navigate,
+  goBack,
+};

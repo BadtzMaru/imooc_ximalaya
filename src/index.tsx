@@ -4,12 +4,18 @@ import Navigator from '@/navigator/index';
 import store from '@/config/dva';
 import {StatusBar} from 'react-native';
 import '@/config/http';
+import {RootSiblingParent} from 'react-native-root-siblings';
+import {enableScreens} from 'react-native-screens';
+
+enableScreens();
 
 export default class extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <Navigator />
+        <RootSiblingParent>
+          <Navigator />
+        </RootSiblingParent>
         <StatusBar
           backgroundColor="transparent"
           barStyle="dark-content"

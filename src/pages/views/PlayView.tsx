@@ -1,5 +1,5 @@
 import {RootState} from '@/models/index';
-import {viewportWidth} from '@/utils/index';
+import {navigate, viewportWidth} from '@/utils/index';
 import React from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
@@ -20,6 +20,9 @@ interface IProps extends ModelState {
 }
 
 class PlayView extends React.Component<IProps> {
+  onPress = () => {
+    navigate('Detail');
+  };
   render() {
     const {routeName, playState} = this.props;
     if (
@@ -31,7 +34,7 @@ class PlayView extends React.Component<IProps> {
     }
     return (
       <View style={styles.container}>
-        <Play />
+        <Play onPress={this.onPress} />
       </View>
     );
   }
